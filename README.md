@@ -16,7 +16,7 @@ Accurate estimation of follicle location and hair growth orientation is essentia
 - Hair orientation estimation
 - Oriented object detection
 
-## Code Release
+## Code
 
 ### � Coming Soon
 
@@ -32,5 +32,46 @@ We provide the **model components** to demonstrate our approach:
 - ✅ **ADA Module** - Adaptive Direction Aware Module with dynamic gating
 - ✅ **Output Heads** - Heatmap, Vector, and Offset prediction heads
 
+## FPO Representation
 
+### Overview
+
+The FPO representation describes each follicle instance using a **point-vector** format, where:
+- **Point** (`center`): The 2D coordinates of the follicle opening
+- **Vector** (`direction`): The semantic growth direction as a unit vector
+
+### JSON Structure
+
+Each annotation file contains:
+
+```json
+{
+  "num_detections": 43,           // Total number of follicles in the image
+  "image_size": [1024, 1280],     // [height, width] of the image
+  "detections": [                 // Array of follicle instances
+    {
+      "center": [826.24, 520.96], // Follicle location (x, y) in pixels
+      "direction": {
+        "cos": 0.9676,            // x-component of unit vector (vx)
+        "sin": -0.2525,           // y-component of unit vector (vy)
+        "angle_rad": -0.2553,     // Angle in radians
+        "angle_deg": -14.63       // Angle in degrees
+      }
+    },
+    // ... more detections
+  ]
+}
+```
+
+### Field Descriptions
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `num_detections` | int | Total number of follicle instances |
+| `image_size` | [int, int] | Image dimensions [height, width] |
+| `center` | [float, float] | Follicle location [x, y] in pixel coordinates |
+| `cos` | float | x-component of growth direction (vx), normalized to unit length |
+| `sin` | float | y-component of growth direction (vy), normalized to unit length |
+| `angle_rad` | float | Growth angle in radians, range: [-π, π] |
+| `angle_deg` | float | Growth angle in degrees, range: [-180°, 180°] |
 
