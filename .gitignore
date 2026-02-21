@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyTorch
+*.pth
+*.pt
+*.ckpt
+checkpoints/
+weights/
+pretrained/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+datasets/
+*.zip
+*.tar.gz
+
+# Logs
+logs/
+*.log
+runs/
+wandb/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Model Implementation (Protected until paper acceptance)
+net/model.py
+
+# Keep only the public interface
+!net/model_interface.py
+!net/README.md
