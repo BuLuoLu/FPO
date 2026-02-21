@@ -65,7 +65,4 @@ temp/
 
 # Model Implementation (Protected until paper acceptance)
 net/model.py
-net/loss.py
-net/train.py
-net/test.py
-net/utils.py
+
