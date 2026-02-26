@@ -1,137 +1,81 @@
-# ==================== 数据相关 ====================
 data:
-  # 数据路径
   data_root: "HairReg/Data/Data_H"
   image_dir: "HairReg/Data/Data_H/images"
   label_dir: "HairReg/Data/Data_H/lables"
   
-  # 数据集划分文件（txt文件，每行一个文件名，不带后缀）
   train_list: "HairReg/Data/Data_H/train.txt"
   val_list: "HairReg/Data/Data_H/val.txt"
   
-  # 图像参数
-  image_size: [1024, 1024]  # 输入图像大小 [H, W]
-  heatmap_downsample_factor: 4  # 热力图下采样因子 (1024/4=256)
+  image_size: [1024, 1024] 
+  heatmap_downsample_factor: 4 
   
-  # 高斯核参数（用于生成热力图）
-  # 设置为 null 使用自适应计算：sigma_major = vec_length/1.5, sigma_minor = sigma_major/4.0
-  sigma_major: 17  # best:17  
-  sigma_minor: 4  # best:4
+  sigma_major: 17   
+  sigma_minor: 4 
   
-  # 数据增强
   use_augmentation: true
 
-# ==================== 模型相关 ====================
 model:
-  # Backbone网络
-  backbone: 'resnet50'  # 可选: 'resnet34', 'resnet50', 'resnet101'
-  pretrained: true
-  pretrained_path: "HairReg/checkpoints/resnet50-0676ba61.pth"  # 本地预训练权重路径，null则自动下载
+  backbone: 'resnet50'  
+  pretrained: false
+  # pretrained_path: "https://download.pytorch.org/models/resnet50-0676ba61.pth"
   
-  # 高级特征增强
-  use_deformable: true   # 使用可变形卷积（自适应感受野，适合细长毛囊结构）
-  use_attention: true    # 使用CBAM注意力机制（强化重要特征）
-  use_elongated: true    # 使用非对称卷积（针对细长结构的方向特征提取）【新增】
-  use_gate: true         # 使用门控机制（动态调整特征融合权重）【新增】
-
-
-# ==================== 损失函数相关 ====================
+  use_deformable: true   
+  use_attention: true    
+  use_elongated: true      
+  use_gate: true          
+  
 loss:
-  # 损失权重配置
-  heatmap_weight: 1.0      # 热力图损失权重
-  direction_weight: 0.1    # 方向向量损失权重 (Smooth L1)
-  unit_weight: 0.1         # 单位向量约束权重 (||v|| = 1)
-  angle_weight: 0.1        # 角度约束权重 (atan2 + Smooth L1)【新增】
-  offset_weight: 0.1       # Offset损失权重 (亚像素定位，CenterNet风格)
+  heatmap_weight: 1.0      
+  direction_weight: 0.1    
+  unit_weight: 0.1         
+  angle_weight: 0.1        
+  offset_weight: 1.0       
   
-  # Focal Loss 配置（用于热力图）
-  focal_alpha: 0.75        # 正样本权重（标准值0.75，范围0.5-0.9）
-  focal_beta: 2.0          # gamma参数，难易样本权重（标准值2.0，范围1.0-5.0）
+  focal_alpha: 0.75        
+  focal_beta: 2.0         
   
-  # 说明：
-  # - 热力图损失：Focal Loss (处理样本不平衡)
-  # - 方向损失1：Smooth L1 Loss (确保数值接近目标)
-  # - 方向损失2：Unit Vector Loss (约束 cos²θ + sin²θ = 1)
-  # - 方向损失3：Angle Loss (直接约束角度值，从cos/sin计算角度后使用Smooth L1)
-  # - Offset损失：L1 Loss (补偿下采样的量化误差，提升定位精度)
-  
-# ==================== 训练相关 ====================
 training:
-  # 训练轮数
   num_epochs: 150
-  
-  # 批次大小（根据GPU内存调整）
   batch_size: 4
-  
-  # 学习率
-  learning_rate: 1e-4  # 1e-4
-  
-  # 优化器
+  learning_rate: 1e-4 
   optimizer:
-    # ===== Adam 优化器参数 =====
-    # type: 'adam'            # 优化器类型: 'adam', 'sgd', 'adamw'
-    # weight_decay: 1e-4    # 权重衰减（L2正则化）
-    
-    # ===== SGD 优化器参数 =====
-    # type: 'sgd'
-    # momentum: 0.9         # 动量因子 (默认: 0.9, 范围: 0.0-1.0)
-    # nesterov: true        # 使用Nesterov动量 (默认: false)
-    # weight_decay: 1e-4  # L2正则化
-    
-    # ===== AdamW 优化器参数 =====
     type: 'adamw'
-    betas: [0.9, 0.999]   # AdamW动量参数 (默认: [0.9, 0.999])
-    eps: 1e-8           # 数值稳定性参数 (默认: 1e-8)
+    betas: [0.9, 0.999]   
+    eps: 1e-8           
     weight_decay: 1e-4  
   
-  # 学习率调度器
   scheduler:
     use_scheduler: true
-    type: 'cosine'  # 使用余弦退火，训练更稳定
+    type: 'cosine' 
     
-    # Warm-up配置（推荐用于可变形卷积）
-    use_warmup: true      # 是否使用warm-up（推荐True）
-    warmup_epochs: 20     # warm-up的epoch数量（前20个epoch缓慢增加学习率）
-    
-    # CosineAnnealingLR 参数
-    T_max: 150      # 与num_epochs保持一致
-    eta_min: 1e-6 # 最小学习率（1e-6）
+    use_warmup: true      
+    warmup_epochs: 20
+
+    T_max: 80      
+    eta_min: 1e-6 
 
 
-# ==================== 数据加载相关 ====================
 dataloader:
-  num_workers: 2  # 数据加载线程数（根据CPU核心数调整）
-  pin_memory: true  # 加速GPU数据传输
+  num_workers: 2  
+  pin_memory: true  
 
-
-# ==================== 保存和日志相关 ====================
 output:
-  # 输出目录
   checkpoint_dir: "HairReg/output/exp3/checkpoints"
   log_dir: "HairReg/output/exp3/logs"
   
-  # 保存频率
-  save_freq: 10  # 每10个epoch保存一次检查点
-  print_freq: 20  # 每20个batch打印一次详细信息
-  
-  # 是否保存最佳模型
-  save_best: true  # 自动保存验证损失最低的模型
+  save_freq: 10  
+  print_freq: 20  
+  save_best: true  
 
 
-# ==================== 设备相关 ====================
 device:
-  type: 'cuda'  # 'cuda' or 'cpu'
-  gpu_ids: [3]  # 使用的GPU ID列表，多GPU: [0, 1]
+  type: 'cuda'  
+  gpu_ids: [3] 
 
-
-# ==================== 其他 ====================
 misc:
-  # 随机种子（保证可复现性）
   seed: 42
   
-  # 恢复训练
-  resume: false  # 是否从检查点恢复训练
-  resume_path: null  # 检查点路径，例如: "checkpoints/latest.pth"
+  resume: false 
+  resume_path: null  
   
-  # 调试模式
-  debug: false  # 调试模式下只训练少量数据
+  debug: false 
