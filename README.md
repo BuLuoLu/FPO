@@ -37,6 +37,23 @@ The FPO representation describes each follicle instance using a **point-vector**
 - **Point** (`center`): The 2D coordinates of the follicle opening
 - **Vector** (`direction`): The semantic growth direction as a unit vector
 
+### Annotation Example
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="annotations/4.jpg" width="400" alt="Original Image"/><br/>
+      <b>Original Trichoscopic Image</b>
+    </td>
+    <td align="center">
+      <img src="annotations/result.png" width="400" alt="Annotated Result"/><br/>
+      <b>FPO Annotation Visualization</b>
+    </td>
+  </tr>
+</table>
+
+*Left: Original trichoscopic image. Right: FPO annotations with follicle locations (circles) and growth directions (arrows). See [`annotations/4.json`](annotations/4.json) for the complete annotation data.*
+
 ### JSON Structure
 
 Each annotation file contains:
