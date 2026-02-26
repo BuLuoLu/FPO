@@ -26,9 +26,6 @@ The complete source code, including the full model implementation and pretrained
 
 We provide the **model components** to demonstrate our approach:
 
-- ✅ **Deformable Convolution** - Handles irregular geometric deformations
-- ✅ **CBAM Attention** - Channel and spatial attention mechanisms
-- ✅ **Elongated Feature Extractor** - Direction-aware asymmetric convolutions
 - ✅ **ADA Module** - Adaptive Direction Aware Module with dynamic gating
 - ✅ **Output Heads** - Heatmap, Vector, and Offset prediction heads
 
