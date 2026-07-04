@@ -88,16 +88,3 @@ This will overlay:
 3. Export to JSON format
 
 **Note**: Full annotation tools will be released after paper acceptance.
-
-## Citation
-
-If you use this annotation format, please cite:
-
-```bibtex
-@inproceedings{fpo2026,
-  title={From Bounding Boxes to Semantic Orientation: Point-Based Follicle Pose Estimation},
-  author={Anonymized Authors},
-  booktitle={MICCAI 2026},
-  year={2026}
-}
-```

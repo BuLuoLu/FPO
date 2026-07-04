@@ -1,8 +1,8 @@
-# From Bounding Boxes to Semantic Orientation: Point-Based Follicle Pose Estimation
+# FPO-Net: Joint Follicular Opening Localization and Growth Direction Estimation in Trichoscopic Images
 
 ## Abstract
 
-Accurate estimation of follicle location and hair growth orientation is essential for the image-guided hair transplantation. Most existing trichoscopic analysis approaches rely on bounding box-based approaches, which only provide coarse spatial localization and infer orientation from region geometry rather than the semantic growth direction of hair. Such representations are flawed in challenging scenarios involving occlusion and hair crossings. To address these issues, we reformulate follicle analysis as a point-based pose estimation problem and propose a Follicular Point–Orientation (FPO) representation, in which each follicle is explicitly modeled by a spatial point and an associated unit orientation vector. This formulation decouples localization from bounding-box geometry and enables a compact, semantically grounded description of follicle pose. Based on FPO, we develop a joint follicle position–orientation estimation framework (FPO-Net) for the joint estimation of follicle position and growth direction in trichoscopic images. Experiments on three trichoscopic datasets demonstrate that the proposed point and orientation formulation consistently outperforms rotated bounding boxes methods in both localization precision and orientation estimation. 
+Accurate localization of follicular openings and estimation of local hair growth directions are important for the analysis of trichoscopic images. Existing approaches commonly formulate follicle analysis using horizontal or rotated bounding boxes. However, these representations provide only coarse opening localization, while rotated boxes encode an undirected geometric axis rather than the semantic direction of hair growth. To better align the output representation with the task, we formulate follicle analysis as joint point and directed orientation estimation and introduce the Follicular Point-Orientation (FPO) representation. Each follicle is represented by an opening point and an associated unit direction vector, decoupling follicular localization and local orientation from the spatial extent of the hair shaft. Based on FPO, we develop FPO-Net, a joint estimation framework with heatmap, offset, and orientation heads, together with an Adaptive Direction-Aware module for feature refinement. Experiments on three datasets show that the complete FPO-Net achieves lower localization, axial-orientation, and directed-orientation errors, as well as higher joint detection scores, than the evaluated rotated-box-based detectors.
 
 ## Overview
 
@@ -34,6 +34,7 @@ We provide the **model components** to demonstrate our approach:
 ### Overview
 
 The FPO representation describes each follicle instance using a **point-vector** format, where:
+
 - **Point** (`center`): The 2D coordinates of the follicle opening
 - **Vector** (`direction`): The semantic growth direction as a unit vector
 
@@ -79,13 +80,12 @@ Each annotation file contains:
 
 ### Field Descriptions
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `num_detections` | int | Total number of follicle instances |
-| `image_size` | [int, int] | Image dimensions [height, width] |
-| `center` | [float, float] | Follicle location [x, y] in pixel coordinates |
-| `cos` | float | x-component of growth direction (vx), normalized to unit length |
-| `sin` | float | y-component of growth direction (vy), normalized to unit length |
-| `angle_rad` | float | Growth angle in radians, range: [-π, π] |
-| `angle_deg` | float | Growth angle in degrees, range: [-180°, 180°] |
-
+| Field              | Type           | Description                                                     |
+| ------------------ | -------------- | --------------------------------------------------------------- |
+| `num_detections` | int            | Total number of follicle instances                              |
+| `image_size`     | [int, int]     | Image dimensions [height, width]                                |
+| `center`         | [float, float] | Follicle location [x, y] in pixel coordinates                   |
+| `cos`            | float          | x-component of growth direction (vx), normalized to unit length |
+| `sin`            | float          | y-component of growth direction (vy), normalized to unit length |
+| `angle_rad`      | float          | Growth angle in radians, range: [-π, π]                       |
+| `angle_deg`      | float          | Growth angle in degrees, range: [-180°, 180°]                 |
