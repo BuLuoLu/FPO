@@ -52,14 +52,23 @@ python tools/visualize_annotation.py \
   --output output/annotation.png
 ```
 
+## OBB Annotation Conversion
+
+Convert LabelMe triangle annotations (follicular opening first) to four-corner
+OBB polygons.
+
+```bash
+python tools/convert_triangle_to_rotated_bbox.py \
+  --input_dir /path/to/triangle_annotations \
+  --output_dir output/obb \
+  --extension_ratio 0.0
+```
+
 ## Evaluation
 
-Evaluate existing prediction and ground-truth JSON files in the FPO format;
-this tool does not run model inference and only requires NumPy.
-For image ID `sample`, use `sample.json` for ground truth and
-`sample_result.json` (or `sample.json`) for predictions, at the same original-image
-pixel scale. Add `confidence` or `score` to each prediction (default: 1.0).
-For images with no predictions, provide a JSON file with `"detections": []`.
+Evaluate FPO predictions using MLE, directed MAE, joint F1, and joint AP/mAP.
+For image `sample`, use `sample_result.json` for predictions and `sample.json`
+for ground truth.
 
 ```bash
 python tools/evaluate.py \
@@ -69,5 +78,4 @@ python tools/evaluate.py \
   --output_dir output/evaluation
 ```
 
-Results include localization error (MLE), directed angular error (MAE), joint F1,
-and joint AP/mAP, saved to `output/evaluation/evaluation_results.json`.
+Results are saved to `output/evaluation/evaluation_results.json`.
