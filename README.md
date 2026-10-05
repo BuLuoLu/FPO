@@ -1,44 +1,32 @@
 # FPO-Net: Joint Follicular Opening Localization and Growth Direction Estimation in Trichoscopic Images
 
-## Abstract
+FPO-Net jointly localizes follicular openings and estimates hair growth
+directions using a point-vector representation.
 
-Accurate localization of follicular openings and estimation of local hair growth directions are important for the analysis of trichoscopic images. Existing approaches commonly formulate follicle analysis using horizontal or rotated bounding boxes. However, these representations provide only coarse opening localization, while rotated boxes encode an undirected geometric axis rather than the semantic direction of hair growth. To better align the output representation with the task, we formulate follicle analysis as joint point and directed orientation estimation and introduce the Follicular Point-Orientation (FPO) representation. Each follicle is represented by an opening point and an associated unit direction vector, decoupling follicular localization and local orientation from the spatial extent of the hair shaft. Based on FPO, we develop FPO-Net, a joint estimation framework with heatmap, offset, and orientation heads, together with an Adaptive Direction-Aware module for feature refinement. Experiments on three datasets show that the complete FPO-Net achieves lower localization, axial-orientation, and directed-orientation errors, as well as higher joint detection scores, than the evaluated rotated-box-based detectors.
+![FPO-Net overview](images/fig1.png)
 
-## Overview
+## Installation
 
-![Figure 1](images/fig1.png)
-*Comparisons between representations based on bounding boxes and ours.*
+Run commands from the repository root. Install compatible PyTorch/torchvision
+versions with support for `torchvision.ops.DeformConv2d`.
 
-## Keywords
+```bash
+pip install -r requirements.txt
+```
 
-- Hair follicle detection
-- Hair transplantation
-- Hair orientation estimation
-- Oriented object detection
+## Model
 
-## Code
+```python
+from net import build_model
 
-### � Coming Soon
+model = build_model(backbone="resnet50", pretrained=False)
+```
 
-The complete source code, including the full model implementation and pretrained weights, will be publicly released after paper acceptance.
+## Annotations
 
-### 📦 Currently Available
-
-We provide the **model components** to demonstrate our approach:
-
-- ✅ **ADA Module** - Adaptive Direction Aware Module with dynamic gating
-- ✅ **Output Heads** - Heatmap, Vector, and Offset prediction heads
-
-## FPO Representation
-
-### Overview
-
-The FPO representation describes each follicle instance using a **point-vector** format, where:
-
-- **Point** (`center`): The 2D coordinates of the follicle opening
-- **Vector** (`direction`): The semantic growth direction as a unit vector
-
-### Annotation Example
+Each follicle is represented by a pixel location `center: [x, y]` and a unit
+growth vector `direction: {cos, sin, angle_rad, angle_deg}`. Coordinates use
+the original image frame, with x increasing rightward and y downward.
 
 <table>
   <tr>
@@ -53,39 +41,33 @@ The FPO representation describes each follicle instance using a **point-vector**
   </tr>
 </table>
 
-*Left: Original trichoscopic image. Right: FPO annotations with follicle locations (circles) and growth directions (arrows). See [`annotations/4.json`](annotations/4.json) for the complete annotation data.*
+See [`annotations/4.json`](annotations/4.json) for the example and
+[`annotations/README.md`](annotations/README.md) for the format and annotation
+protocol. To visualize follicle locations and growth directions:
 
-### JSON Structure
-
-Each annotation file contains:
-
-```json
-{
-  "num_detections": 43,           // Total number of follicles in the image
-  "image_size": [1024, 1280],     // [height, width] of the image
-  "detections": [                 // Array of follicle instances
-    {
-      "center": [826.24, 520.96], // Follicle location (x, y) in pixels
-      "direction": {
-        "cos": 0.9676,            // x-component of unit vector (vx)
-        "sin": -0.2525,           // y-component of unit vector (vy)
-        "angle_rad": -0.2553,     // Angle in radians
-        "angle_deg": -14.63       // Angle in degrees
-      }
-    },
-    // ... more detections
-  ]
-}
+```bash
+python tools/visualize_annotation.py \
+  --image annotations/4.jpg \
+  --annotation annotations/4.json \
+  --output output/annotation.png
 ```
 
-### Field Descriptions
+## Evaluation
 
-| Field              | Type           | Description                                                     |
-| ------------------ | -------------- | --------------------------------------------------------------- |
-| `num_detections` | int            | Total number of follicle instances                              |
-| `image_size`     | [int, int]     | Image dimensions [height, width]                                |
-| `center`         | [float, float] | Follicle location [x, y] in pixel coordinates                   |
-| `cos`            | float          | x-component of growth direction (vx), normalized to unit length |
-| `sin`            | float          | y-component of growth direction (vy), normalized to unit length |
-| `angle_rad`      | float          | Growth angle in radians, range: [-π, π]                       |
-| `angle_deg`      | float          | Growth angle in degrees, range: [-180°, 180°]                 |
+Evaluate existing prediction and ground-truth JSON files in the FPO format;
+this tool does not run model inference and only requires NumPy.
+For image ID `sample`, use `sample.json` for ground truth and
+`sample_result.json` (or `sample.json`) for predictions, at the same original-image
+pixel scale. Add `confidence` or `score` to each prediction (default: 1.0).
+For images with no predictions, provide a JSON file with `"detections": []`.
+
+```bash
+python tools/evaluate.py \
+  --pred_dir /path/to/predictions \
+  --gt_dir /path/to/annotations \
+  --image_names sample \
+  --output_dir output/evaluation
+```
+
+Results include localization error (MLE), directed angular error (MAE), joint F1,
+and joint AP/mAP, saved to `output/evaluation/evaluation_results.json`.

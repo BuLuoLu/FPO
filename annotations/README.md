@@ -14,7 +14,7 @@ Each annotation file is a JSON containing follicle locations and growth directio
 
 ### Structure
 
-```json
+```text
 {
   "num_detections": <number of follicles>,
   "image_size": [height, width],
@@ -61,23 +61,23 @@ Each annotation file is a JSON containing follicle locations and growth directio
 
 Use the provided tool to visualize annotations:
 
-```python
-python tools/visualize_annotation.py
+Run from the repository root:
+
+```bash
+python tools/visualize_annotation.py \
+  --image annotations/4.jpg \
+  --annotation annotations/4.json \
+  --output output/annotation.png
 ```
 
 This will overlay:
 - Follicle positions as circles
 - Growth directions as arrows
-- Instance IDs (optional)
 
 ## Statistics for Example (4.json)
 
 - **Total follicles**: 43
 - **Image size**: 1024 × 1280 pixels
-- **Density**: ~2.6 follicles per 10,000 pixels
-- **Direction distribution**: 
-  - Forward directions (0° ± 90°): 30 instances
-  - Backward directions (±180° ± 90°): 13 instances
 
 ## Creating New Annotations
 
@@ -87,4 +87,7 @@ This will overlay:
    - Click on growth direction point (within fixed radius) → records `direction`
 3. Export to JSON format
 
-**Note**: Full annotation tools will be released after paper acceptance.
+Only this single example image, its annotation, and the visualization are
+included. The full datasets and annotation-authoring software are not part
+of this release. `result.png` is an annotation visualization, not a model
+prediction or an evaluation report.

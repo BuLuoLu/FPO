@@ -8,7 +8,10 @@ from pathlib import Path
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import xml.etree.ElementTree as ET
-from utils import generate_oriented_gaussian
+if __package__:
+    from .utils import generate_oriented_gaussian
+else:
+    from utils import generate_oriented_gaussian
 
 
 class HairFollicleDataset(Dataset):

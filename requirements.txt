@@ -1,0 +1,8 @@
+torch>=1.13
+torchvision>=0.14
+numpy
+opencv-python
+albumentations
+scipy
+matplotlib
+PyYAML

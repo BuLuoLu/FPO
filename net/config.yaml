@@ -1,81 +1,34 @@
+# Component settings; supply your own data paths.
+# No training, inference, or experiment entry is provided.
 data:
-  data_root: "HairReg/Data/Data_H"
-  image_dir: "HairReg/Data/Data_H/images"
-  label_dir: "HairReg/Data/Data_H/lables"
-  
-  train_list: "HairReg/Data/Data_H/train.txt"
-  val_list: "HairReg/Data/Data_H/val.txt"
-  
-  image_size: [1024, 1024] 
-  heatmap_downsample_factor: 4 
-  
-  sigma_major: 17   
-  sigma_minor: 4 
-  
+  image_dir: "data/images"
+  label_dir: "data/annotations"
+
+
+  image_size: [1024, 1024]
+  heatmap_downsample_factor: 4
+
+  sigma_major: 17
+  sigma_minor: 4
+
   use_augmentation: true
 
 model:
-  backbone: 'resnet50'  
+  backbone: 'resnet50'
   pretrained: false
-  # pretrained_path: "https://download.pytorch.org/models/resnet50-0676ba61.pth"
-  
-  use_deformable: true   
-  use_attention: true    
-  use_elongated: true      
-  use_gate: true          
-  
+  pretrained_path: null
+
+  use_deformable: true
+  use_attention: true
+  use_elongated: true
+  use_gate: true
+
 loss:
-  heatmap_weight: 1.0      
-  direction_weight: 0.1    
-  unit_weight: 0.1         
-  angle_weight: 0.1        
-  offset_weight: 1.0       
-  
-  focal_alpha: 0.75        
-  focal_beta: 2.0         
-  
-training:
-  num_epochs: 150
-  batch_size: 4
-  learning_rate: 1e-4 
-  optimizer:
-    type: 'adamw'
-    betas: [0.9, 0.999]   
-    eps: 1e-8           
-    weight_decay: 1e-4  
-  
-  scheduler:
-    use_scheduler: true
-    type: 'cosine' 
-    
-    use_warmup: true      
-    warmup_epochs: 20
+  heatmap_weight: 1.0
+  direction_weight: 0.1
+  unit_weight: 0.1
+  angle_weight: 0.1
+  offset_weight: 1.0
 
-    T_max: 80      
-    eta_min: 1e-6 
-
-
-dataloader:
-  num_workers: 2  
-  pin_memory: true  
-
-output:
-  checkpoint_dir: "HairReg/output/exp3/checkpoints"
-  log_dir: "HairReg/output/exp3/logs"
-  
-  save_freq: 10  
-  print_freq: 20  
-  save_best: true  
-
-
-device:
-  type: 'cuda'  
-  gpu_ids: [3] 
-
-misc:
-  seed: 42
-  
-  resume: false 
-  resume_path: null  
-  
-  debug: false 
+  focal_alpha: 0.75
+  focal_beta: 2.0

@@ -1,8 +1,7 @@
 """
 FPO-Net Model Components
 
-This file demonstrates the key components used in FPO-Net architecture.
-The complete model implementation will be released after paper acceptance.
+Building blocks used by the complete FPO-Net architecture in model.py.
 
 Components included:
 - Deformable Convolution
@@ -363,5 +362,4 @@ class OffsetHead(nn.Module):
 # - ResNet backbone for feature extraction
 # - Multi-scale decoder with ADA modules
 # - Three output heads (heatmap, vector, offset)
-# 
-# Full implementation will be released after paper acceptance.
+# See model.py for the complete architecture.
